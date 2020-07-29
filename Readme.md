@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Andrii Yasnohorodskyi](https://up.htmlacademy.ru/ecmascript/12/user/817957).
-* Наставник: `Неизвестно`.
+* Наставник: `Сергей Андреев`.
 
 ---
 
