@@ -330,21 +330,21 @@ const tripMainMenu = tripMainElement.getElementsByTagName(`h2`);
 
 const tripEventsBoardElement = document.querySelector(`.trip-events`);
 
-render (tripMainMenu[1],createMenuTemplate(), `beforebegin`);
-render (tripControlsElement, createFilterTemplate());
-render (tripEventsBoardElement, createSorterTemplate());
-render (tripEventsBoardElement, createEventEditTemplate());
+render(tripMainMenu[1], createMenuTemplate(), `beforebegin`);
+render(tripControlsElement, createFilterTemplate());
+render(tripEventsBoardElement, createSorterTemplate());
+render(tripEventsBoardElement, createEventEditTemplate());
 
-render (tripEventsBoardElement, createEventDayTemplate());
+render(tripEventsBoardElement, createEventDayTemplate());
 
 const tripEventsListTemplate = tripEventsBoardElement.querySelector(`.trip-events__list`);
 
-for(let i = 0; i < EVENT_COUNT; i++) {
-  render (tripEventsListTemplate, createEventTemplate());
-};
+for (let i = 0; i < EVENT_COUNT; i++) {
+  render(tripEventsListTemplate, createEventTemplate());
+}
 
-render (tripMainElement, tripRouteInfoTemplate(), `afterbegin`);
+render(tripMainElement, tripRouteInfoTemplate(), `afterbegin`);
 
 const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
 
-render (tripInfoElement, tripePriceInfoTemplate());
+render(tripInfoElement, tripePriceInfoTemplate());
