@@ -6,7 +6,6 @@ import {getEventOffers} from "../mock/offers.js";
 const EVENT_GROUP_TO_NAME = `Transfer`;
 const EVENT_GROUP_IN_NAME = `Activity`;
 
-
 const createEventTypeListTemplate = (eventTypeLyst, groupType, eventCounter) => {
   return `<legend class="visually-hidden">${groupType}</legend>
     ${eventTypeLyst.map((eventType) =>

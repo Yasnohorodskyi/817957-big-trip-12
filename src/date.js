@@ -9,12 +9,12 @@ export const getTripDates = (events) => {
 };
 
 export const humanizeDateDay = (tripDate) => {
-  let dateDay = new Date(tripDate);
+  const dateDay = new Date(tripDate);
   return dateDay.toLocaleString(`en-US`, {day: `numeric`, month: `short`}).toUpperCase();
 };
 
 export const humanizeDate = (tripDate) => {
-  let dateDay = new Date(tripDate);
+  const dateDay = new Date(tripDate);
   return dateDay.toLocaleString(`en-US`, {day: `numeric`, month: `numeric`, year: `2-digit`});
 };
 
@@ -24,13 +24,12 @@ export const humanizeTime = (eventDate) => {
 
 export const getEventDuration = (startDate, endDate) => {
   const delta = (endDate.getTime() - startDate.getTime()) / 60000;
-  let timeEvent = delta / 60;
-  let hourEvent = Math.trunc(timeEvent);
-  let minutesEvent = delta % 60;
+  const timeEvent = delta / 60;
+  const hourEvent = Math.trunc(timeEvent);
+  const minutesEvent = delta % 60;
 
   if (timeEvent < 1) {
     return minutesEvent + `M`;
-  } else {
-    return hourEvent + `H ` + minutesEvent + `M`;
   }
+  return hourEvent + `H ` + minutesEvent + `M`;
 };
