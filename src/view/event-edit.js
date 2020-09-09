@@ -1,7 +1,6 @@
 import {EVENT_TYPES_IN_POINT, EVENT_TYPES_TO_POINT, CITIES} from "../const.js";
 import {getUpCasePhrase, createElement} from "../utils.js";
 import {humanizeTime, humanizeDate} from "../date.js";
-import {getEventOffers} from "../mock/offers.js";
 
 const EVENT_GROUP_TO_NAME = `Transfer`;
 const EVENT_GROUP_IN_NAME = `Activity`;
@@ -19,7 +18,6 @@ const EVENT_BLANC = {
   isFavorite: false,
   eventCounter: 0,
 };
-
 
 const createEventTypeListTemplate = (eventTypeLyst, groupType, eventCounter) => {
   return `<legend class="visually-hidden">${groupType}</legend>
@@ -55,11 +53,10 @@ const createOffersEventTemplate = (offers, eventCounter) => {
 
       </div>
     </section>`
-
   );
 };
 
-const createEventEditTemplate = (event = EVENT_BLANC) => {
+const createEventEditTemplate = (event = EVENT_BLANC, offersMap) => {
   const {typeEvent, destination, description, photos, price, date, eventCounter} = event;
 
   const action = EVENT_TYPES_IN_POINT.includes(typeEvent) ? `in` : `to`;
@@ -72,7 +69,7 @@ const createEventEditTemplate = (event = EVENT_BLANC) => {
   const cityList = createCityListTemplate(CITIES);
   const typeEventUp = getUpCasePhrase(typeEvent);
   const photosList = createPhotosListTemplate(photos);
-  const offers = getEventOffers().get(typeEvent);
+  const offers = offersMap.get(typeEvent);
   const offersEventTemplate = createOffersEventTemplate(offers, eventCounter);
 
   const cityDescription = destination === `` ? `` :
@@ -156,7 +153,6 @@ const createEventEditTemplate = (event = EVENT_BLANC) => {
     </header>
     <section class="event__details">
       ${offersEventTemplate}
-
       ${cityDescription}
     </section>
   </form>`
@@ -164,14 +160,15 @@ const createEventEditTemplate = (event = EVENT_BLANC) => {
 };
 
 export default class EventEdit {
-  constructor(event) {
+  constructor(event, offersMap) {
     this._event = event;
+    this._offersMap = offersMap;
 
     this._element = null;
   }
 
   getTemplate() {
-    return createEventEditTemplate(this._event);
+    return createEventEditTemplate(this._event, this._offersMap);
   }
 
   getElement() {

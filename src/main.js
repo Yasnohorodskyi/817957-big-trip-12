@@ -9,6 +9,7 @@ import EventsListByDate from "./view/event-date.js";
 import TripInfoView from "./view/route-info.js";
 import PriceInfoView from "./view/price-info.js";
 import {generateEvents} from "./mock/events.js";
+import {getEventOffers} from "./mock/offers.js";
 import {EVENT_COUNT} from "./const.js";
 import {getTripDates} from "./date.js";
 import {render, RenderPosition} from "./utils.js";
@@ -24,7 +25,7 @@ const getEvents = (eventsCounter) => {
 };
 
 const events = getEvents(EVENT_COUNT);
-
+const offers = getEventOffers();
 const tripDates = getTripDates(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);
@@ -36,16 +37,16 @@ render(tripMainMenuElement, new SiteMenuView().getElement(), RenderPosition.AFTE
 render(tripControlsElement, new FiltersView().getElement());
 render(tripEventsBoardElement, new SorterView().getElement());
 
-const renderEvent = (eventsListElement, event) => {
-  const eventComponent = new EventView(event);
-  const eventEditComponent = new EventEditView(event);
+const renderEvent = (eventsListElement, event, offersMap) => {
+  const eventComponent = new EventView(event, offersMap);
+  const eventEditComponent = new EventEditView(event, offersMap);
 
   const replaceEventToForm = () => {
-    eventsListElement.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    eventsListElement.getElement().replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
   };
 
   const replaceFormToEvent = () => {
-    eventsListElement.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    eventsListElement.getElement().replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
   eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
@@ -53,12 +54,12 @@ const renderEvent = (eventsListElement, event) => {
     replaceEventToForm();
   });
 
-  eventEditComponent.getElement().querySelector(`.event__save-btn`).addEventListener(`submit`, (evt) =>{
+  eventEditComponent.getElement().addEventListener(`submit`, (evt) =>{
     evt.preventDefault();
     replaceFormToEvent();
   });
 
-  render(eventsListElement.getElement(), eventEditComponent.getElement());
+  render(eventsListElement.getElement(), eventComponent.getElement());
 };
 
 const eventBoardComponent = new EventBoardView();
@@ -78,7 +79,7 @@ for (let i = 0; i < tripDates.length; i++) {
   render(dayComponent.getElement(), eventsListComponent.getElement());
 
   for (let j = 0; j < eventsFiltered.length; j++) {
-    renderEvent(eventsListComponent, eventsFiltered[j]);
+    renderEvent(eventsListComponent, eventsFiltered[j], offers);
   }
 }
 
