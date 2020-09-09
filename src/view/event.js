@@ -1,7 +1,7 @@
 import {EVENT_TYPES_IN_POINT} from "../const.js";
 import {humanizeTime, getEventDuration} from "../date.js";
 import {getEventOffers} from "../mock/offers.js";
-import {getUpCasePhrase} from "../utils.js";
+import {getUpCasePhrase, createElement} from "../utils.js";
 
 const createOffersEventTemplate = (offers) => {
 
@@ -31,7 +31,7 @@ const createOffersEventTemplate = (offers) => {
      </ul>`);
 };
 
-export const createEventTemplate = (event) => {
+const createEventTemplate = (event) => {
   const {typeEvent, destination, price, date} = event;
   const action = EVENT_TYPES_IN_POINT.includes(typeEvent) ? `in` : `to`;
   const startTime = humanizeTime(date.startEvent);
@@ -69,3 +69,27 @@ export const createEventTemplate = (event) => {
   </li>`
   );
 };
+
+export default class Event {
+  constructor(event) {
+    this._event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

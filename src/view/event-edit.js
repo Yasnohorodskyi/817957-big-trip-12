@@ -1,10 +1,25 @@
 import {EVENT_TYPES_IN_POINT, EVENT_TYPES_TO_POINT, CITIES} from "../const.js";
-import {getUpCasePhrase} from "../utils.js";
+import {getUpCasePhrase, createElement} from "../utils.js";
 import {humanizeTime, humanizeDate} from "../date.js";
 import {getEventOffers} from "../mock/offers.js";
 
 const EVENT_GROUP_TO_NAME = `Transfer`;
 const EVENT_GROUP_IN_NAME = `Activity`;
+
+const EVENT_BLANC = {
+  typeEvent: ``,
+  destination: ``,
+  description: ``,
+  photos: [],
+  price: 0,
+  date: {
+    startEvent: null,
+    endEvent: null,
+  },
+  isFavorite: false,
+  eventCounter: 0,
+};
+
 
 const createEventTypeListTemplate = (eventTypeLyst, groupType, eventCounter) => {
   return `<legend class="visually-hidden">${groupType}</legend>
@@ -44,19 +59,8 @@ const createOffersEventTemplate = (offers, eventCounter) => {
   );
 };
 
-export const createEventEditTemplate = (event = {}) => {
-  const {
-    typeEvent = `taxi`,
-    destination = ``,
-    price,
-    date = {
-      startEvent: null,
-      endEvent: null,
-    },
-    description = ``,
-    photos = [],
-    eventCounter = 0,
-  } = event;
+const createEventEditTemplate = (event = EVENT_BLANC) => {
+  const {typeEvent, destination, description, photos, price, date, eventCounter} = event;
 
   const action = EVENT_TYPES_IN_POINT.includes(typeEvent) ? `in` : `to`;
   const startTime = humanizeTime(date.startEvent);
@@ -85,7 +89,7 @@ export const createEventEditTemplate = (event = {}) => {
 
 
   return (
-    `<form class="trip-events__item  event  event--edit" action="#" method="post">
+    `<form class="event  event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
         <label class="event__type  event__type-btn" for="event-type-toggle-${eventCounter}">
@@ -116,10 +120,10 @@ export const createEventEditTemplate = (event = {}) => {
       </div>
 
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-time-${eventCounter}">
+        <label class="visually-hidden" for="event-start-time-${eventCounter}">
           From
         </label>
-        <input class="event__input  event__input--time" id="event-start-${eventCounter}" type="text" name="event-start-time" value="${startDate} ${startTime}">
+        <input class="event__input  event__input--time" id="event-start-time-${eventCounter}" type="text" name="event-start-time" value="${startDate} ${startTime}">
         &mdash;
         <label class="visually-hidden" for="event-end-time-${eventCounter}">
           To
@@ -137,6 +141,18 @@ export const createEventEditTemplate = (event = {}) => {
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
       <button class="event__reset-btn" type="reset">Cancel</button>
+
+      <input id="event-favorite-${eventCounter}" class="event__favorite-checkbox  visually-hidden" type="checkbox" name="event-favorite" ${event.isFavorite ? `checked` : ``}>
+      <label class="event__favorite-btn" for="event-favorite-${eventCounter}">
+        <span class="visually-hidden">Add to favorite</span>
+        <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
+          <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"/>
+        </svg>
+      </label>
+
+      <button class="event__rollup-btn" type="button">
+        <span class="visually-hidden">Open event</span>
+      </button>
     </header>
     <section class="event__details">
       ${offersEventTemplate}
@@ -146,3 +162,27 @@ export const createEventEditTemplate = (event = {}) => {
   </form>`
   );
 };
+
+export default class EventEdit {
+  constructor(event) {
+    this._event = event;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createEventEditTemplate(this._event);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
