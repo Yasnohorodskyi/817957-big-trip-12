@@ -5,7 +5,7 @@ import {humanizeTime, humanizeDate} from "../date.js";
 const EVENT_GROUP_TO_NAME = `Transfer`;
 const EVENT_GROUP_IN_NAME = `Activity`;
 
-const EVENT_BLANC = {
+const EMPTY_EVENT = {
   typeEvent: ``,
   destination: ``,
   description: ``,
@@ -56,7 +56,7 @@ const createOffersEventTemplate = (offers, eventCounter) => {
   );
 };
 
-const createEventEditTemplate = (event = EVENT_BLANC, offersMap) => {
+const createEventEditTemplate = (event = EMPTY_EVENT, offersMap) => {
   const {typeEvent, destination, description, photos, price, date, eventCounter} = event;
 
   const action = EVENT_TYPES_IN_POINT.includes(typeEvent) ? `in` : `to`;
