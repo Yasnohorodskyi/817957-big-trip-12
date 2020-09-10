@@ -1,4 +1,5 @@
 import {humanizeDateDay} from "../date.js";
+import {createElement} from "../utils.js";
 
 const getTripChain = (events) => {
   const tripSet = new Set();
@@ -20,7 +21,7 @@ const getTriRange = (events) => {
   return `<p class="trip-info__dates">${startDate}&nbsp;&mdash;&nbsp;${endDate.getDate()}</p>`;
 };
 
-export const createTripRouteInfoTemplate = (events) => {
+const createTripRouteInfoTemplate = (events) => {
   const tripChain = getTripChain(events);
   const tripRange = getTriRange(events);
 
@@ -33,3 +34,27 @@ export const createTripRouteInfoTemplate = (events) => {
   </section>`
   );
 };
+
+
+export default class TripInfo {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripRouteInfoTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

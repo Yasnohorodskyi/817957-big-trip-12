@@ -1,4 +1,5 @@
 import {getEventOffers} from "../mock/offers.js";
+import {createElement} from "../utils.js";
 
 const getOffersPrice = (offersList) => {
   let offersPrice = 0;
@@ -22,7 +23,7 @@ const getEventsPrice = (events) => {
   return eventsPrice;
 };
 
-export const createTripPriceInfoTemplate = (events) => {
+const createTripPriceInfoTemplate = (events) => {
   const tripPrice = getEventsPrice(events);
   return (
     `<p class="trip-info__cost">
@@ -30,3 +31,27 @@ export const createTripPriceInfoTemplate = (events) => {
   </p>`
   );
 };
+
+
+export default class PriceInfo {
+  constructor(events) {
+    this._events = events;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripPriceInfoTemplate(this._events);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
