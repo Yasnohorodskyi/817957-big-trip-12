@@ -1,23 +1,9 @@
-import {EVENT_TYPES_IN_POINT, EVENT_TYPES_TO_POINT, CITIES} from "../const.js";
+import {EVENT_TYPES_IN_POINT, EVENT_TYPES_TO_POINT, CITIES, EMPTY_EVENT} from "../const.js";
 import {getUpCasePhrase, createElement} from "../utils.js";
 import {humanizeTime, humanizeDate} from "../date.js";
 
 const EVENT_GROUP_TO_NAME = `Transfer`;
 const EVENT_GROUP_IN_NAME = `Activity`;
-
-const EMPTY_EVENT = {
-  typeEvent: ``,
-  destination: ``,
-  description: ``,
-  photos: [],
-  price: 0,
-  date: {
-    startEvent: null,
-    endEvent: null,
-  },
-  isFavorite: false,
-  eventCounter: 0,
-};
 
 const createEventTypeListTemplate = (eventTypeLyst, groupType, eventCounter) => {
   return `<legend class="visually-hidden">${groupType}</legend>
