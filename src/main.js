@@ -8,6 +8,7 @@ import DayView from "./view/day.js";
 import EventDateView from "./view/event-date.js";
 import TripInfoView from "./view/route-info.js";
 import PriceInfoView from "./view/price-info.js";
+import NoEventsView from "./view/no-events.js";
 import {generateEvents} from "./mock/events.js";
 import {getEventOffers} from "./mock/offers.js";
 import {EVENT_COUNT} from "./const.js";
@@ -29,13 +30,16 @@ const offers = getEventOffers();
 const tripDates = getTripDates(events);
 
 const tripMainElement = document.querySelector(`.trip-main`);
+render(tripMainElement, new TripInfoView(events).getElement(), RenderPosition.AFTERBEGIN);
+const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
+render(tripInfoElement, new PriceInfoView(events).getElement());
+
 const tripControlsElement = tripMainElement.querySelector(`.trip-main__trip-controls`);
 const tripMainMenuElement = tripControlsElement.querySelector(`.visually-hidden:first-of-type`);
 const tripEventsBoardElement = document.querySelector(`.trip-events`);
 
 render(tripMainMenuElement, new MenuView().getElement(), RenderPosition.AFTEREND);
 render(tripControlsElement, new FiltersView().getElement());
-render(tripEventsBoardElement, new SorterView().getElement());
 
 const renderEvent = (eventsListElement, event, offersMap) => {
   const eventComponent = new EventView(event, offersMap);
@@ -49,37 +53,55 @@ const renderEvent = (eventsListElement, event, offersMap) => {
     eventsListElement.getElement().replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
-  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      replaceFormToEvent();
+      document.removeEventListener(`keydown`, onEscKeyDown);
+    }
+  };
 
+  eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replaceEventToForm();
+    document.addEventListener(`keydown`, onEscKeyDown);
+  });
+
+  eventEditComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replaceFormToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   eventEditComponent.getElement().addEventListener(`submit`, (evt) => {
     evt.preventDefault();
     replaceFormToEvent();
+    document.removeEventListener(`keydown`, onEscKeyDown);
   });
 
   render(eventsListElement.getElement(), eventComponent.getElement());
 };
 
-const eventBoardComponent = new EventBoardView();
-render(tripEventsBoardElement, eventBoardComponent.getElement());
+const renderBoard = (renderBoardContainer, eventsList, offersMap, tripDatesList) => {
+  if (eventsList.length === 0) {
+    render(renderBoardContainer, new NoEventsView().getElement());
+  } else {
+    render(renderBoardContainer, new SorterView().getElement());
 
-for (let i = 0; i < tripDates.length; i++) {
-  let dayComponent = new DayView(tripDates[i], i + 1);
-  let eventsListComponent = new EventDateView();
-  const eventsFiltered = events.filter((event) => event.date.startEvent.toISOString().slice(0, 10) === tripDates[i]);
+    const eventBoardComponent = new EventBoardView();
+    render(renderBoardContainer, eventBoardComponent.getElement());
 
-  render(eventBoardComponent.getElement(), dayComponent.getElement());
-  render(dayComponent.getElement(), eventsListComponent.getElement());
+    for (let i = 0; i < tripDatesList.length; i++) {
+      let dayComponent = new DayView(tripDatesList[i], i + 1);
+      let eventsListComponent = new EventDateView();
+      const eventsFiltered = eventsList.filter((eventList) => eventList.date.startEvent.toISOString().slice(0, 10) === tripDatesList[i]);
 
-  for (let eventFiltered of eventsFiltered) {
-    renderEvent(eventsListComponent, eventFiltered, offers);
+      render(eventBoardComponent.getElement(), dayComponent.getElement());
+      render(dayComponent.getElement(), eventsListComponent.getElement());
+
+      for (let eventFiltered of eventsFiltered) {
+        renderEvent(eventsListComponent, eventFiltered, offersMap);
+      }
+    }
   }
-}
+};
 
-render(tripMainElement, new TripInfoView(events).getElement(), RenderPosition.AFTERBEGIN);
-
-const tripInfoElement = tripMainElement.querySelector(`.trip-main__trip-info`);
-
-render(tripInfoElement, new PriceInfoView(events).getElement());
+renderBoard(tripEventsBoardElement, events, offers, tripDates);

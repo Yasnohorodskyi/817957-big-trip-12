@@ -1,5 +1,6 @@
 import {getEventOffers} from "../mock/offers.js";
 import {createElement} from "../utils.js";
+import {EMPTY_EVENT} from "../const.js";
 
 const getOffersPrice = (offersList) => {
   let offersPrice = 0;
@@ -11,7 +12,7 @@ const getOffersPrice = (offersList) => {
   return offersPrice;
 };
 
-const getEventsPrice = (events) => {
+const getEventsPrice = (events = EMPTY_EVENT) => {
   let offers = [];
   let eventsPrice = 0;
   let eventOffersPrice = 0;
