@@ -91,8 +91,8 @@ const renderBoard = (renderBoardContainer, eventsList, offersMap, tripDatesList)
     render(renderBoardContainer, eventBoardComponent.getElement());
 
     for (let i = 0; i < tripDatesList.length; i++) {
-      let dayComponent = new DayView(tripDatesList[i], i + 1);
-      let eventsListComponent = new EventDateView();
+      const dayComponent = new DayView(tripDatesList[i], i + 1);
+      const eventsListComponent = new EventDateView();
       const eventsFiltered = eventsList.filter((eventList) => eventList.date.startEvent.toISOString().slice(0, 10) === tripDatesList[i]);
 
       render(eventBoardComponent.getElement(), dayComponent.getElement());

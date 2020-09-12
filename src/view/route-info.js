@@ -27,12 +27,13 @@ const getTriRange = (events) => {
 const createTripRouteInfoTemplate = (events) => {
   const tripChain = getTripChain(events);
   const tripRange = getTriRange(events);
+  const isEventsEmpty = events.length === 0;
 
   return (
     `<section class="trip-main__trip-info  trip-info">
      <div class="trip-info__main">
-       ${events.length !== 0 ? tripChain : ``}
-       ${events.length !== 0 ? tripRange : ``}
+       ${!isEventsEmpty ? tripChain : ``}
+       ${!isEventsEmpty ? tripRange : ``}
       </div>
      </section>`
   );
