@@ -22,6 +22,7 @@ const getEvents = (eventsCounter) => {
     eventCounter += 1;
     event.eventCounter = event.eventCounter + eventCounter;
   });
+
   return eventsList;
 };
 
