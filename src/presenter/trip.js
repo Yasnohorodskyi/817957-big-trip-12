@@ -7,7 +7,6 @@ import EventDateView from "../view/event-date.js";
 import NoEventsView from "../view/no-events.js";
 import {render, replace} from "../utils/render.js";
 
-
 export default class Trip {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
@@ -80,11 +79,13 @@ export default class Trip {
       this._renderSort();
       render(this._boardContainer, this._eventBoardComponent);
 
-      for (let i = 0; i < this._tripDatesList.length; i++) {
-        const dayComponent = new DayView(this._tripDatesList[i], i + 1);
+      let counter = 1;
+      for (const tripDate of this._tripDatesList) {
+        const dayComponent = new DayView(tripDate, counter);
+        counter += 1;
         const eventsListComponent = new EventDateView();
 
-        const eventsFiltered = this._eventsList.filter((eventList) => eventList.date.startEvent.toISOString().slice(0, 10) === this._tripDatesList[i]);
+        const eventsFiltered = this._eventsList.filter((eventList) => eventList.date.startEvent.toISOString().slice(0, 10) === tripDate);
 
         render(this._eventBoardComponent, dayComponent);
         render(dayComponent, eventsListComponent);
@@ -94,6 +95,5 @@ export default class Trip {
         }
       }
     }
-
   }
 }
