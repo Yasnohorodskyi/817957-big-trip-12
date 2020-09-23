@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 
 const getEventsByDateList = () => {
   return (
@@ -6,24 +6,8 @@ const getEventsByDateList = () => {
   );
 };
 
-export default class EventsListByDate {
-  constructor() {
-    this._element = null;
-  }
-
+export default class EventsListByDate extends AbstractView {
   getTemplate() {
     return getEventsByDateList();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
