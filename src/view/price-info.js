@@ -1,5 +1,5 @@
 import {getEventOffers} from "../mock/offers.js";
-import {createElement} from "../utils.js";
+import AbstractView from "./abstract.js";
 import {EMPTY_EVENT} from "../const.js";
 
 const getOffersPrice = (offersList) => {
@@ -34,25 +34,13 @@ const createTripPriceInfoTemplate = (events) => {
 };
 
 
-export default class PriceInfo {
+export default class PriceInfo extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripPriceInfoTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

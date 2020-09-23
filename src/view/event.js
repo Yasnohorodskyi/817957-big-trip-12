@@ -1,6 +1,7 @@
 import {EVENT_TYPES_IN_POINT} from "../const.js";
-import {humanizeTime, getEventDuration} from "../date.js";
-import {getUpCasePhrase, createElement} from "../utils.js";
+import {humanizeTime, getEventDuration} from "../utils/date.js";
+import {getUpCasePhrase} from "../utils/common.js";
+import AbstractView from "./abstract.js";
 
 const createOffersEventTemplate = (offers) => {
 
@@ -69,27 +70,25 @@ const createEventTemplate = (event, offersMap) => {
   );
 };
 
-export default class Event {
+export default class Event extends AbstractView {
   constructor(event, offersMap) {
+    super();
     this._event = event;
     this._offersMap = offersMap;
-
-    this._element = null;
+    this._eventClickHandler = this._eventClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventTemplate(this._event, this._offersMap);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _eventClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.eventClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEventClickHandler(callback) {
+    this._callback.eventClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._eventClickHandler);
   }
 }

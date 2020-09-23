@@ -1,4 +1,4 @@
-import {getRandomInteger} from "../utils.js";
+import {getRandomInteger} from "../utils/common.js";
 import {EVENT_TYPES, CITIES} from "../const.js";
 import {getCitiesMap} from "./cities.js";
 

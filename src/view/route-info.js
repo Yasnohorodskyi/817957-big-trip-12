@@ -1,5 +1,5 @@
-import {humanizeDateDay} from "../date.js";
-import {createElement} from "../utils.js";
+import {humanizeDateDay} from "../utils/date.js";
+import AbstractView from "./abstract.js";
 
 
 const getTripChain = (events) => {
@@ -39,25 +39,13 @@ const createTripRouteInfoTemplate = (events) => {
   );
 };
 
-export default class TripInfo {
+export default class TripInfo extends AbstractView {
   constructor(events) {
+    super();
     this._events = events;
-    this._element = null;
   }
 
   getTemplate() {
     return createTripRouteInfoTemplate(this._events);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

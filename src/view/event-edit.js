@@ -1,6 +1,7 @@
 import {EVENT_TYPES_IN_POINT, EVENT_TYPES_TO_POINT, CITIES, EMPTY_EVENT} from "../const.js";
-import {getUpCasePhrase, createElement} from "../utils.js";
-import {humanizeTime, humanizeDate} from "../date.js";
+import {getUpCasePhrase} from "../utils/common.js";
+import AbstractView from "./abstract.js";
+import {humanizeTime, humanizeDate} from "../utils/date.js";
 
 const EVENT_GROUP_TO_NAME = `Transfer`;
 const EVENT_GROUP_IN_NAME = `Activity`;
@@ -145,27 +146,41 @@ const createEventEditTemplate = (event = EMPTY_EVENT, offersMap) => {
   );
 };
 
-export default class EventEdit {
+export default class EventEdit extends AbstractView {
   constructor(event, offersMap) {
+    super();
     this._event = event;
     this._offersMap = offersMap;
-
-    this._element = null;
+    this._eventEditClickHandler = this._eventEditClickHandler.bind(this);
+    this._eventSubmitHandler = this._eventSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createEventEditTemplate(this._event, this._offersMap);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _eventEditClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.eventEditClick();
   }
 
-  removeElement() {
-    this._element = null;
+  _eventSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.eventSubmit();
+  }
+
+  setEventEditClickHandler(callback) {
+    this._callback.eventEditClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._eventEditClickHandler);
+  }
+
+  _eventSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.eventSubmit();
+  }
+
+  setEventSubmitHandler(callback) {
+    this._callback.eventSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._eventSubmitHandler);
   }
 }

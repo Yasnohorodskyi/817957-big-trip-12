@@ -1,5 +1,5 @@
-import {humanizeDateDay} from "../date.js";
-import {createElement} from "../utils.js";
+import {humanizeDateDay} from "../utils/date.js";
+import AbstractView from "./abstract.js";
 
 const createDayTemplate = (tripDate, tripDayNumber) => {
   const dateDay = humanizeDateDay(tripDate);
@@ -13,27 +13,14 @@ const createDayTemplate = (tripDate, tripDayNumber) => {
   );
 };
 
-export default class Day {
+export default class Day extends AbstractView {
   constructor(tripDate, tripDayNumber) {
+    super();
     this._tripDate = tripDate;
     this._tripDayNumber = tripDayNumber;
-
-    this._element = null;
   }
 
   getTemplate() {
     return createDayTemplate(this._tripDate, this._tripDayNumber);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
