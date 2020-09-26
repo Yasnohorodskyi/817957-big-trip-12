@@ -24,3 +24,5 @@ export const SorterType = {
   TIME: `time`,
   PRICE: `price`
 };
+
+export const SORTER_SIGN = 0;

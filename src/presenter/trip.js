@@ -6,7 +6,7 @@ import DayView from "../view/day.js";
 import EventDateView from "../view/event-date.js";
 import NoEventsView from "../view/no-events.js";
 import {render, replace} from "../utils/render.js";
-import {SorterType} from "../const.js";
+import {SorterType, SORTER_SIGN} from "../const.js";
 import {sorterByField, sorterByDate} from "../utils/common.js";
 
 export default class Trip {
@@ -123,8 +123,7 @@ export default class Trip {
         }
       }
     } else {
-      let counter = 0;
-      const dayView = new DayView(this._tripDatesList[0], counter);
+      const dayView = new DayView(this._tripDatesList[0], SORTER_SIGN);
       const eventsListView = new EventDateView();
       render(this._eventBoardView, dayView);
       render(dayView, eventsListView);

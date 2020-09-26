@@ -21,7 +21,6 @@ const getEvents = (eventsCounter) => {
 };
 
 const events = getEvents(EVENT_COUNT);
-console.log(events);
 const offers = getEventOffers();
 const tripDates = getTripDates(events);
 
