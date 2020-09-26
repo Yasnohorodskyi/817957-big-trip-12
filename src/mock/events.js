@@ -52,6 +52,7 @@ const generateEvent = (eventScedule, counter) => {
     date: {
       startEvent: eventScedule[counter].start,
       endEvent: eventScedule[counter].end,
+      timeDuration: (eventScedule[counter].end.getTime() - eventScedule[counter].start.getTime()),
     },
     isFavorite: Boolean(getRandomInteger(0, 1)),
     eventCounter: 0,

@@ -13,7 +13,14 @@ export const EMPTY_EVENT = {
   date: {
     startEvent: null,
     endEvent: null,
+    eventDuration: null,
   },
   isFavorite: false,
   eventCounter: 0,
+};
+
+export const SorterType = {
+  EVENT: `event`,
+  TIME: `time`,
+  PRICE: `price`
 };

@@ -6,39 +6,76 @@ import DayView from "../view/day.js";
 import EventDateView from "../view/event-date.js";
 import NoEventsView from "../view/no-events.js";
 import {render, replace} from "../utils/render.js";
+import {SorterType} from "../const.js";
+import {sorterByField, sorterByDate} from "../utils/common.js";
 
 export default class Trip {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
 
-    this._eventBoardComponent = new EventBoardView();
-    this._sorterComponent = new SorterView();
-    this._noEventsComponent = new NoEventsView();
+    this._eventBoardView = new EventBoardView();
+    this._sorterView = new SorterView();
+    this._noEventsView = new NoEventsView();
+    this._currentSorterType = SorterType.EVENT;
+
+    this._handleSorterTypeChange = this._handleSorterTypeChange.bind(this);
 
   }
 
   init(eventsList, offersMap, tripDatesList) {
     this._eventsList = eventsList.slice();
+    this._sourcedEventsList = eventsList.slice();
     this._tripDatesList = tripDatesList;
     this._offersMap = offersMap;
 
     this._renderBoard();
   }
 
-  _renderSort() {
-    render(this._boardContainer, this._sorterComponent);
+  _sorterEvents(sorterType) {
+    switch (sorterType) {
+      case SorterType.TIME:
+        this._eventsList.sort(sorterByDate(`date`));
+        break;
+      case SorterType.PRICE:
+        this._eventsList.sort(sorterByField(`price`));
+        break;
+      default:
+        this._eventsList = this._sourcedEventsList.slice();
+    }
+
+    this._currentSorterType = sorterType;
+  }
+
+
+  _handleSorterTypeChange(sorterType) {
+    if (this._currentSorterType === sorterType) {
+      return;
+    }
+
+    this._sorterEvents(sorterType);
+    this._clearEventsList();
+    this._renderEventsList();
+  }
+
+  _renderSorter() {
+    render(this._boardContainer, this._sorterView);
+    this._sorterView.setSorterTypeChangeHandler(this._handleSorterTypeChange);
+  }
+
+  _clearEventsList() {
+    this._eventBoardView.getElement().innerHTML = ``;
   }
 
   _renderEvent(eventsListElement, event, offersMap) {
-    const eventComponent = new EventView(event, offersMap);
-    const eventEditComponent = new EventEditView(event, offersMap);
+    const eventView = new EventView(event, offersMap);
+    const eventEditView = new EventEditView(event, offersMap);
 
     const replaceEventToForm = () => {
-      replace(eventEditComponent, eventComponent);
+      replace(eventEditView, eventView);
     };
 
     const replaceFormToEvent = () => {
-      replace(eventComponent, eventEditComponent);
+      replace(eventView, eventEditView);
     };
 
     const onEscKeyDown = (evt) => {
@@ -49,51 +86,62 @@ export default class Trip {
       }
     };
 
-    eventComponent.setEventClickHandler(() => {
+    eventView.setEventClickHandler(() => {
       replaceEventToForm();
       document.addEventListener(`keydown`, onEscKeyDown);
     });
 
-    eventEditComponent.setEventEditClickHandler(() => {
+    eventEditView.setEventEditClickHandler(() => {
       replaceFormToEvent();
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-    eventEditComponent.setEventSubmitHandler(() => {
+    eventEditView.setEventSubmitHandler(() => {
       replaceFormToEvent();
       document.removeEventListener(`keydown`, onEscKeyDown);
     });
 
-    render(eventsListElement, eventComponent);
+    render(eventsListElement, eventView);
   }
 
   _renderNoEvents() {
-    render(this._boardContainer, this._noEventsComponent);
+    render(this._boardContainer, this._noEventsView);
   }
 
-  _renderBoard() {
-
-    if (this._eventsList.length === 0) {
-      this._renderNoEvents();
-    } else {
-      this._renderSort();
-      render(this._boardContainer, this._eventBoardComponent);
-
+  _renderEventsList() {
+    if (this._currentSorterType === SorterType.EVENT) {
       let counter = 1;
       for (const tripDate of this._tripDatesList) {
-        const dayComponent = new DayView(tripDate, counter);
+        const dayView = new DayView(tripDate, counter);
         counter += 1;
-        const eventsListComponent = new EventDateView();
-
+        const eventsListView = new EventDateView();
         const eventsFiltered = this._eventsList.filter((eventList) => eventList.date.startEvent.toISOString().slice(0, 10) === tripDate);
-
-        render(this._eventBoardComponent, dayComponent);
-        render(dayComponent, eventsListComponent);
-
+        render(this._eventBoardView, dayView);
+        render(dayView, eventsListView);
         for (let eventFiltered of eventsFiltered) {
-          this._renderEvent(eventsListComponent, eventFiltered, this._offersMap);
+          this._renderEvent(eventsListView, eventFiltered, this._offersMap);
         }
+      }
+    } else {
+      let counter = 0;
+      const dayView = new DayView(this._tripDatesList[0], counter);
+      const eventsListView = new EventDateView();
+      render(this._eventBoardView, dayView);
+      render(dayView, eventsListView);
+      for (let eventSortered of this._eventsList) {
+        this._renderEvent(eventsListView, eventSortered, this._offersMap);
       }
     }
   }
+
+  _renderBoard() {
+    if (this._eventsList.length === 0) {
+      this._renderNoEvents();
+    } else {
+      this._renderSorter();
+      render(this._boardContainer, this._eventBoardView);
+      this._renderEventsList();
+    }
+  }
 }
+
